@@ -1,17 +1,17 @@
 #!/usr/bin/python
 # -*- coding: UTF-8 -*-
-# 业务包：爬出人物信息
+# 业务包：爬出behance作品集
 
 import scrapy
-from person.item.tagItems import tagItem,authorItem
+from behance.item.tagItems import tagItem,authorItem
 import constants as cs
-import person.common.selectUrl as sel
+import behance.common.selectUrl as sel
 import json
 
 
 class portfolioSpider(scrapy.Spider):
     name = "portfolio"
-    allowed_domains = ["person.net"]
+    allowed_domains = ["behance.net"]
     headers = {
         "X-Requested-With": "XMLHttpRequest",
     }
@@ -20,7 +20,7 @@ class portfolioSpider(scrapy.Spider):
     def start_requests(self):
         for tag in cs.BEHANCE_SEARCH_TAG:
             for ordinal in range(1,10):
-                url = "https://www.person.net/search?ordinal=%s&content=projects&sort=appreciations&time=all&schema_tags=%s&user_tags=%s"
+                url = "https://www.behance.net/search?ordinal=%s&content=projects&sort=appreciations&time=all&schema_tags=%s&user_tags=%s"
                 yield scrapy.Request(url=url % (ordinal, tag, tag), callback=self.parse, headers=self.headers)
 
 
@@ -60,10 +60,9 @@ class portfolioSpider(scrapy.Spider):
             yield item
 
 
-
 class authorSpider(scrapy.Spider):
     name = "author"
-    allowed_domains = ["person.net"]
+    allowed_domains = ["behance.net"]
     headers = {
         "X-Requested-With": "XMLHttpRequest",
     }
@@ -73,7 +72,7 @@ class authorSpider(scrapy.Spider):
     def start_requests(self):
         for ordinal in range(0,10):
             _ordinal = self.per_page * ordinal
-            url = "https://www.person.net/search?ordinal=%s&per_page=48&content=users&sort=appreciations&time=all&country=CN"
+            url = "https://www.behance.net/search?ordinal=%s&per_page=48&content=users&sort=appreciations&time=all&country=CN"
             yield scrapy.Request(url=url % _ordinal, callback=self.parse, headers=self.headers)
 
 
@@ -91,16 +90,17 @@ class authorSpider(scrapy.Spider):
             item["author_url"] = author_urls[i]
             yield item
 
+
 class typeSpider(scrapy.Spider):
     name = "type"
-    allowed_domains = ["person.net"]
+    allowed_domains = ["behance.net"]
     headers = {
         "X-Requested-With": "XMLHttpRequest",
     }
 
 
     def start_requests(self):
-        url = "https://www.person.net/search"
+        url = "https://www.behance.net/search"
         yield scrapy.Request(url=url, callback=self.parse, headers=self.headers)
 
 
@@ -110,3 +110,4 @@ class typeSpider(scrapy.Spider):
         html = json.loads(response.body)["html"]
         type_names = sel.get_type_names(html)
         print type_names
+

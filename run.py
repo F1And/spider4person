@@ -4,7 +4,7 @@
 
 from scrapy import cmdline
 
-# name = 'portfolio'
-name = 'autor'
+name = 'portfolio'
+# name = 'autor'
 cmd = 'scrapy crawl {0}'.format(name)
 cmdline.execute(cmd.split())

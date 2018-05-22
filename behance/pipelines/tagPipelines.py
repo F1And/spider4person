@@ -7,7 +7,7 @@
 # Don't forget to add your pipeline to the ITEM_PIPELINES setting
 # See: http://doc.scrapy.org/en/latest/topics/item-pipeline.html
 
-from person.DB.dbHelper import DBHelper
+from behance.DB.dbHelper import DBHelper
 
 class BehancePipeline(object):
     def __init__(self):

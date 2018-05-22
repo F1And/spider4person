@@ -7,6 +7,8 @@ from twisted.enterprise import adbapi
 from scrapy.utils.project import get_project_settings
 
 
+
+
 class DBHelper():
 
     def __init__(self):
