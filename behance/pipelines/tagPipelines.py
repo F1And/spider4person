@@ -24,3 +24,11 @@ class AuthorPipeline(object):
     def process_item(self, item, spider):
         self.db.insert_author(item)
         return item
+
+class unsplashPipeline(object):
+    def __init__(self):
+        self.db = DBHelper()
+
+    def process_item(self, item, spider):
+        self.db.insert_person(item)
+        return item

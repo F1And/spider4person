@@ -3,7 +3,7 @@
 # 业务包：爬出behance作品集
 
 import scrapy
-from behance.item.tagItems import tagItem,authorItem
+from behance.item.tagItems import tagItem, authorItem
 import constants as cs
 import behance.common.selectUrl as sel
 import json
@@ -19,17 +19,15 @@ class portfolioSpider(scrapy.Spider):
 
     def start_requests(self):
         for tag in cs.BEHANCE_SEARCH_TAG:
-            for ordinal in range(1,10):
+            for ordinal in range(1, 10):
                 url = "https://www.behance.net/search?ordinal=%s&content=projects&sort=appreciations&time=all&schema_tags=%s&user_tags=%s"
                 yield scrapy.Request(url=url % (ordinal, tag, tag), callback=self.parse, headers=self.headers)
-
 
     def parse(self, response):
         if "html" not in response.body:
             return
         html = json.loads(response.body)["html"]
         portfolio_urls = sel.get_urls(html)
-
 
         for idx in range(0, len(portfolio_urls)):
             portfolio_url = portfolio_urls[idx]
@@ -39,7 +37,6 @@ class portfolioSpider(scrapy.Spider):
             yield scrapy.Request(url=portfolio_url, callback=self.picture_parse, headers=self.headers)
         pass
 
-
     def picture_parse(self, response):
         if "view" not in response.body:
             return
@@ -47,7 +44,7 @@ class portfolioSpider(scrapy.Spider):
         tag_words = json.loads(response.body)["view"]["site"]["meta"]
         tags = data["tags"]
         module = data["modules"]
-        for i in range(0,len(tags)):
+        for i in range(0, len(tags)):
             item = tagItem()
             tag_name = tags[i]["title"]
             tag_id = tags[i]["id"]
@@ -70,11 +67,10 @@ class authorSpider(scrapy.Spider):
     per_page = 48
 
     def start_requests(self):
-        for ordinal in range(0,10):
+        for ordinal in range(0, 10):
             _ordinal = self.per_page * ordinal
             url = "https://www.behance.net/search?ordinal=%s&per_page=48&content=users&sort=appreciations&time=all&country=CN"
             yield scrapy.Request(url=url % _ordinal, callback=self.parse, headers=self.headers)
-
 
     def parse(self, response):
         if "html" not in response.body:
@@ -84,7 +80,7 @@ class authorSpider(scrapy.Spider):
         author_urls = sel.get_author_urls(html)
 
         for i in range(0, self.per_page):
-            # item 一定要放循环中 不然数据库会出现大量重复数据
+            # item一定要放循环中 不然数据库会出现大量重复数据
             item = authorItem()
             item["author_name"] = author_names[i]
             item["author_url"] = author_urls[i]
@@ -95,14 +91,12 @@ class typeSpider(scrapy.Spider):
     name = "type"
     allowed_domains = ["behance.net"]
     headers = {
-        "X-Requested-With": "XMLHttpRequest",
+        "X-Requested-With": "XMLHttpRequest"
     }
-
 
     def start_requests(self):
         url = "https://www.behance.net/search"
         yield scrapy.Request(url=url, callback=self.parse, headers=self.headers)
-
 
     def parse(self, response):
         if "html" not in response.body:
@@ -111,3 +105,27 @@ class typeSpider(scrapy.Spider):
         type_names = sel.get_type_names(html)
         print type_names
 
+
+class unsplashSpider(scrapy.Spider):
+    name = 'unsplash'
+    allowed_domains = ["zcool.com.cn"]
+    headers = {
+        "Content-Type": "text/html"
+    }
+
+    def start_requests(self):
+        for pages in range(1,2):
+            url = "http://www.zcool.com.cn/designer?recommend=-1&city=-1&professionId=11&sort=0&p=%s"
+            yield scrapy.Request(url=url % pages, callback=self.parse, headers=self.headers)
+
+    def parse(self, response):
+        html = response._body
+        zcool_urls = sel.get_zcool_urls(html)
+        for zcool_url in zcool_urls:
+            print zcool_url
+            yield scrapy.Request(url=zcool_url, callback=self.person_parse, headers=self.headers)
+
+    def person_parse(self, response):
+        html = response._body
+        zcool_author_info = sel.get_author_info(html)
+        print zcool_author_info

@@ -38,3 +38,17 @@ def get_type_names(html):
     type_names = sel.xpath(
         "/html/body/div").extract()
     return type_names
+
+def get_zcool_urls(html):
+    sel = Selector(text=html)
+    # 站酷URL
+    zcool_urls = sel.xpath(
+        "/html/body/div/main//div[@class='avatar-container-80']/a/@href").extract()
+    return zcool_urls
+
+def get_author_info(html):
+    sel = Selector(text=html)
+    # 作者信息
+    zcool_author_info = sel.xpath(
+        "/html/body/div/main/div//td']").extract()
+    return zcool_author_info

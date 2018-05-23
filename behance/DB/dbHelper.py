@@ -61,8 +61,20 @@ class DBHelper():
         params = (item["author_name"], item["author_url"])
         tx.execute(sql, params)
 
+    def insert_person(self, item):
+        sql = "insert into behance_author(author_name,author_url) values(%s,%s)"
+        # 调用插入的方法
+        query = self.dbpool.runInteraction(self._conditional_insert_author, sql, item)
+        # 调用异常处理方法
+        query.addErrback(self._handle_error)
 
-    def _handle_error(self, failue):
+        return item
+
+    def _conditional_insert_person(self, tx, sql, item):
+        params = (item["author_name"], item["author_url"])
+        tx.execute(sql, params)
+
+    def _handle_error(self, fail):
         print('--------------database operation exception!!-----------------')
-        print(failue)
+        print(fail)
 
