@@ -25,10 +25,26 @@ class AuthorPipeline(object):
         self.db.insert_author(item)
         return item
 
-class unsplashPipeline(object):
+class zcoolPipeline(object):
     def __init__(self):
         self.db = DBHelper()
 
     def process_item(self, item, spider):
         self.db.insert_person(item)
+        return item
+
+class jobPipeline(object):
+    def __init__(self):
+        self.db = DBHelper()
+
+    def process_item(self, item, spider):
+        self.db.insert_person(item)
+        return item
+
+class picturePipeline(object):
+    def __init__(self):
+        self.db = DBHelper()
+
+    def process_item(self, item, spider):
+        self.db.insert_picture(item)
         return item

@@ -3,7 +3,7 @@
 # 业务包：爬出behance作品集
 
 import scrapy
-from behance.item.tagItems import tagItem, authorItem
+from behance.item.tagItems import tagItem, authorItem, pictureItem
 import constants as cs
 import behance.common.selectUrl as sel
 import json
@@ -106,15 +106,15 @@ class typeSpider(scrapy.Spider):
         print type_names
 
 
-class unsplashSpider(scrapy.Spider):
-    name = 'unsplash'
+class zcoolSpider(scrapy.Spider):
+    name = 'zcool'
     allowed_domains = ["zcool.com.cn"]
     headers = {
         "Content-Type": "text/html"
     }
 
     def start_requests(self):
-        for pages in range(1,2):
+        for pages in range(1, 2):
             url = "http://www.zcool.com.cn/designer?recommend=-1&city=-1&professionId=11&sort=0&p=%s"
             yield scrapy.Request(url=url % pages, callback=self.parse, headers=self.headers)
 
@@ -122,10 +122,71 @@ class unsplashSpider(scrapy.Spider):
         html = response._body
         zcool_urls = sel.get_zcool_urls(html)
         for zcool_url in zcool_urls:
-            print zcool_url
             yield scrapy.Request(url=zcool_url, callback=self.person_parse, headers=self.headers)
 
     def person_parse(self, response):
         html = response._body
         zcool_author_info = sel.get_author_info(html)
         print zcool_author_info
+
+
+class jobSpider(scrapy.Spider):
+    name = 'job'
+    allowed_domains = ["lagou.com"]
+    headers = {
+        "Content-Type": "text/html"
+    }
+
+    def start_requests(self):
+        job_url = 'https://www.lagou.com/jobs/list_java?labelWords=&fromSearch=true&suginput=?labelWords=hot'
+        yield scrapy.http.FormRequest(url=job_url, callback=self.parse, headers=self.headers)
+
+    def parse(self, response):
+        html = response.body
+        print html
+        jobs_url = sel.get_jobs_url(html)
+        print jobs_url
+
+
+class pictureSpider(scrapy.Spider):
+    name = "picture"
+    allowed_domains = ["behance.net"]
+    headers = {
+        "X-Requested-With": "XMLHttpRequest",
+    }
+    save_portfolio_ids = set()
+    per_page = 48
+    def start_requests(self):
+        for tag in cs.BEHANCE_SEARCH_TAG:
+            for ordinal in range(1, 10):
+                _ordinal = self.per_page * ordinal
+                url = "https://www.behance.net/search?ordinal=%s&content=projects&sort=appreciations&time=all&schema_tags=%s&user_tags=%s"
+                yield scrapy.Request(url=url % (_ordinal, tag, tag), callback=self.parse, headers=self.headers)
+
+    def parse(self, response):
+        if "html" not in response.body:
+            return
+        html = json.loads(response.body)["html"]
+        portfolio_urls = sel.get_urls(html)
+
+        for idx in range(0, len(portfolio_urls)):
+            portfolio_url = portfolio_urls[idx]
+            portfolio_id = portfolio_url.split("/")[4]
+
+            self.save_portfolio_ids.add(int(portfolio_id))
+            yield scrapy.Request(url=portfolio_url, callback=self.picture_parse, headers=self.headers)
+        pass
+
+    def picture_parse(self, response):
+        if "view" not in response.body:
+            return
+        data = json.loads(response.body)["view"]["project"]
+        tags = data["tags"]
+        module = data["modules"]
+        for i in range(0, len(tags)):
+            item = pictureItem()
+            picture_url = module[i]["src"]
+            if picture_url == '':
+                continue
+            item["picture_url"] = picture_url
+            yield item

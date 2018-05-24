@@ -74,18 +74,20 @@ BEHANCE_SEARCH_SCHOOL = (
 # behance 搜索条件 - 标签
 BEHANCE_SEARCH_TAG = (
     984867,  # minimalistic
-    # 980447,  # cute
-    # 972577,  # drawing
-    # 1053995,  # flat
-    # 975707,  # 3D
-    # 987233,  # black&white
-    # 972243,  # vintage
-    # 988753,  # line art
-    # 1059759,  # pop art
-    # 978087,  # technology
-    # 975677,  # colorful
-    # 979257,  # aquarelle
-    # 3421649,  # e-comerce
-    # 984139,  # dream
-    # 971675,  # sketch
+    980447,  # cute
+    972577,  # drawing
+    1053995,  # flat
+    975707,  # 3D
+    987233,  # black&white
+    972243,  # vintage
+    988753,  # line art
+    1059759,  # pop art
+    978087,  # technology
+    975677,  # colorful
+    979257,  # aquarelle
+    3421649,  # e-comerce
+    984139,  # dream
+    971675,  # sketch
 )
+
+# job

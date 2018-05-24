@@ -7,8 +7,6 @@ from twisted.enterprise import adbapi
 from scrapy.utils.project import get_project_settings
 
 
-
-
 class DBHelper():
 
     def __init__(self):
@@ -64,7 +62,7 @@ class DBHelper():
     def insert_person(self, item):
         sql = "insert into behance_author(author_name,author_url) values(%s,%s)"
         # 调用插入的方法
-        query = self.dbpool.runInteraction(self._conditional_insert_author, sql, item)
+        query = self.dbpool.runInteraction(self._conditional_insert_person, sql, item)
         # 调用异常处理方法
         query.addErrback(self._handle_error)
 
@@ -74,7 +72,19 @@ class DBHelper():
         params = (item["author_name"], item["author_url"])
         tx.execute(sql, params)
 
+    def insert_picture(self, item):
+        sql = "insert into picture(url) values(%s)"
+        # 调用插入的方法
+        query = self.dbpool.runInteraction(self._conditional_insert_picture, sql, item)
+        # 调用异常处理方法
+        query.addErrback(self._handle_error)
+
+        return item
+
+    def _conditional_insert_picture(self, tx, sql, item):
+        params = (item["picture_url"])
+        tx.execute(sql, params)
+
     def _handle_error(self, fail):
         print('--------------database operation exception!!-----------------')
         print(fail)
-

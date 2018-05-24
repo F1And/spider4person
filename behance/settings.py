@@ -11,12 +11,11 @@ NEWSPIDER_MODULE = 'behance.spiders'
 
 
 ITEM_PIPELINES = {
-   'behance.pipelines.tagPipelines.unsplashPipeline': 300
+   # 'behance.pipelines.tagPipelines.zcoolPipeline': 300,
+   # 'behance.pipelines.tagPipelines.jobPipeline': 300,
+    'behance.pipelines.tagPipelines.picturePipeline': 300,
 }
 
-# ITEM_PIPELINES = {
-#     'behance.pipelines.tagPipelines.AuthorPipeline': 300
-# }
 
 
 

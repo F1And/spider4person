@@ -50,5 +50,12 @@ def get_author_info(html):
     sel = Selector(text=html)
     # 作者信息
     zcool_author_info = sel.xpath(
-        "/html/body/div/main/div//td']").extract()
+        "//*[@id='body']/main/div[6]/div/div[1]/div[2]/table/tbody/tr").extract()
     return zcool_author_info
+
+def get_jobs_url(html):
+    sel = Selector(text=html)
+    # 职位信息
+    lagou_jobs_url = sel.xpath(
+        "/html/body//div[@class='position']/div/a/@href").extract()
+    return lagou_jobs_url
