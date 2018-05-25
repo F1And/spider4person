@@ -131,15 +131,17 @@ class zcoolSpider(scrapy.Spider):
 
 
 class jobSpider(scrapy.Spider):
-    name = 'job'
+    name = "job"
     allowed_domains = ["lagou.com"]
     headers = {
-        "Content-Type": "text/html"
+        "X-Requested-With": "XMLHttpRequest",
     }
 
     def start_requests(self):
-        job_url = 'https://www.lagou.com/jobs/list_java?labelWords=&fromSearch=true&suginput=?labelWords=hot'
-        yield scrapy.http.FormRequest(url=job_url, callback=self.parse, headers=self.headers)
+        job_url = 'http://www.lagou.com/jobs/positionAjax.json?'
+        return [scrapy.http.FormRequest(job_url,
+                                        formdata={'pn': str(1), 'kd': 'java'}, callback=self.parse)]
+        # yield scrapy.http.FormRequest(url=job_url, callback=self.parse, headers=self.headers)
 
     def parse(self, response):
         html = response.body

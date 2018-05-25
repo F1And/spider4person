@@ -12,8 +12,8 @@ NEWSPIDER_MODULE = 'behance.spiders'
 
 ITEM_PIPELINES = {
    # 'behance.pipelines.tagPipelines.zcoolPipeline': 300,
-   # 'behance.pipelines.tagPipelines.jobPipeline': 300,
-    'behance.pipelines.tagPipelines.picturePipeline': 300,
+   'behance.pipelines.tagPipelines.jobPipeline': 300,
+    # 'behance.pipelines.tagPipelines.picturePipeline': 300,
 }
 
 
