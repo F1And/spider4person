@@ -73,7 +73,7 @@ class DBHelper():
         tx.execute(sql, params)
 
     def insert_picture(self, item):
-        sql = "insert into picture(url) values(%s)"
+        sql = "insert into behance_picture(url) values(%s)"
         # 调用插入的方法
         query = self.dbpool.runInteraction(self._conditional_insert_picture, sql, item)
         # 调用异常处理方法
