@@ -103,7 +103,7 @@ class typeSpider(scrapy.Spider):
             return
         html = json.loads(response.body)["html"]
         type_names = sel.get_type_names(html)
-        print type_names
+        print(type_names)
 
 
 class zcoolSpider(scrapy.Spider):
@@ -127,7 +127,7 @@ class zcoolSpider(scrapy.Spider):
     def person_parse(self, response):
         html = response._body
         zcool_author_info = sel.get_author_info(html)
-        print zcool_author_info
+        print(zcool_author_info)
 
 
 class jobSpider(scrapy.Spider):
@@ -145,9 +145,9 @@ class jobSpider(scrapy.Spider):
 
     def parse(self, response):
         html = response.body
-        print html
+        print(html)
         jobs_url = sel.get_jobs_url(html)
-        print jobs_url
+        print(jobs_url)
 
 
 class pictureSpider(scrapy.Spider):
@@ -177,7 +177,7 @@ class pictureSpider(scrapy.Spider):
 
             self.save_portfolio_ids.add(int(portfolio_id))
             yield scrapy.Request(url=portfolio_url, callback=self.picture_parse, headers=self.headers)
-        pass
+
 
     def picture_parse(self, response):
         if "view" not in response.body:
